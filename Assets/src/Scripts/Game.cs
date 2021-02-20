@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Yro {
-    public class Game : MonoBehaviour {
+    public class Game : YrBehavior {
         public enum State {
             None,
             Home,
@@ -14,20 +14,18 @@ namespace Yro {
             Loose
         }
 
-        private State _state;
+        private State _state = State.None;
 
         public State state {
             get => this._state;
             set {
                 this._state = value;
                 if (this._state == State.Home) {
-                    if (SceneManager.GetSceneByName("Game").isLoaded) {
-                        StartCoroutine(this.UnloadScene());
-                    }
+                    YroSceneManager.UnloadScene(YroSceneManager.gameScene);
+                    YroSceneManager.LoadScene(YroSceneManager.menuScene);
                 } else if (this._state == State.Playing) {
-                    if (!SceneManager.GetSceneByName("Game").isLoaded) {
-                        StartCoroutine(this.LoadScene());
-                    }
+                    YroSceneManager.UnloadScene(YroSceneManager.menuScene);
+                    YroSceneManager.LoadScene(YroSceneManager.gameScene);
                 } else if (this._state == State.Pause) {
 
                 } else if (this._state == State.Win) {
@@ -37,20 +35,5 @@ namespace Yro {
                 }
             }
         }
-
-        private IEnumerator LoadScene() {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
-            while (!asyncLoad.isDone) {
-                yield return null;
-            }
-        }
-
-        private IEnumerator UnloadScene() {
-            AsyncOperation asyncLoad = SceneManager.UnloadSceneAsync("Game", UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-            while (!asyncLoad.isDone) {
-                yield return null;
-            }
-        }
-
     }
 }
