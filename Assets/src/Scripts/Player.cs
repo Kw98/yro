@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Yro {
-    public class Player : YrBehavior {
+    public class Player : YBehaviour {
         // Start is called before the first frame update
         void Start()
         {

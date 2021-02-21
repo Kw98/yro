@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Yro {
-    public class Game : YrBehavior {
+    public class Game : YBehaviour {
         public enum State {
             None,
             Home,
