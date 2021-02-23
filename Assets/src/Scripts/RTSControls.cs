@@ -27,8 +27,8 @@ namespace Yro
             }
             if (this._lastHit && this._lastHit.tag == "Enemy" && Vector3.Distance(this.transform.position, this._lastHit.position) <= this._attackRange) {
                 this._agent.isStopped = true;
-                this.transform.LookAt(this._lastHit);
-                this.transform.localEulerAngles = new Vector3(.0f, this.transform.localEulerAngles.y, .0f);
+                Vector3 dir = this._lastHit.position - this.transform.position;
+                this.LookAt(dir);
             }
             if (Input.GetKeyDown(KeyCode.S)) {
                 this._agent.isStopped = true;
@@ -37,12 +37,17 @@ namespace Yro
 
         private void LateUpdate() {
             if (!this._agent.isStopped && this._agent.velocity.sqrMagnitude > Mathf.Epsilon) {
-                Quaternion rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(this._agent.velocity.normalized), this._smoothRotation);
-                rotation.x = .0f;
-                rotation.z = .0f;
-                transform.rotation = rotation;
+                this.LookAt(this._agent.velocity.normalized);
             }
 
         }
+
+        private void LookAt(Vector3 target) {
+            Quaternion rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(target), this._smoothRotation);
+            rotation.x = .0f;
+            rotation.z = .0f;
+            transform.rotation = rotation;
+        }
+
     }
 }
