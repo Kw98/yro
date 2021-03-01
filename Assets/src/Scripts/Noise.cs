@@ -36,7 +36,7 @@ public static class Noise {
                     noiseHeight *= (Mathf.PerlinNoise(xSample, ySample) * 2 - 1) * amplitude;
                     amplitude *= persistance;
                     frequency *= lacunarity;
-                }
+                     }
 
                 if (noiseHeight > maxNoiseHeight)
                     maxNoiseHeight = noiseHeight;

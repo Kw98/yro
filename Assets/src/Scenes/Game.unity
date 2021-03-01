@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 126107289}
   - component: {fileID: 126107287}
   - component: {fileID: 126107288}
+  - component: {fileID: 126107290}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -327,8 +328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 514519880cf28d8409e31dc33cec94f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackRange: 5
   _smoothRotation: 0.2
+  lastHit: {fileID: 0}
 --- !u!4 &126107289
 Transform:
   m_ObjectHideFlags: 0
@@ -344,6 +345,18 @@ Transform:
   m_Father: {fileID: 385198762}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &126107290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126107286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679cfea7ce79cbd4a928ad7e2277c554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &191206865
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +823,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1249429833}
   - component: {fileID: 1249429834}
-  - component: {fileID: 1249429835}
   m_Layer: 8
   m_Name: enemy
   m_TagString: Enemy
@@ -856,19 +868,6 @@ NavMeshAgent:
   m_BaseOffset: 0.37
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1249429835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1249429832}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 672b94dfdaedc9647a9c8977d8b3ffc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _agent: {fileID: 0}
 --- !u!1 &1266517791
 GameObject:
   m_ObjectHideFlags: 0
