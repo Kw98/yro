@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 namespace Yro {
+    [Serializable]
     public struct DFloat {
         float first;
         float second;
@@ -11,7 +12,7 @@ namespace Yro {
 
     [Serializable]
     public struct StatRessource {
-        SpellSource sourceType;
+        public SpellRessource sourceType;
         public float amount;
         public float regen;
     }
@@ -45,16 +46,13 @@ namespace Yro {
 
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
+       //   public Ability[] abilities { private set { } get { return this.abilities; } }
+        public Stat baseStats;
+        public Stat totalStats;
 
+        private void Awake() {
+        //    abilities = GetComponentsInChildren<Ability>();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }
