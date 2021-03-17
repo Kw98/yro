@@ -14,11 +14,21 @@ namespace Yro {
         public float radius = 3f;
         public Transform interactCenter;
 
+        protected void Awake() {
+            if (this.interactCenter == null) {
+                this.interactCenter = this.transform;
+            }
+        }
+
         public virtual void OnInteract() { }
 
         private void OnDrawGizmos() {
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(this.interactCenter.position, this.radius);
+            if (this.interactCenter == null) {
+                Gizmos.DrawWireSphere(this.transform.position, this.radius);
+            } else {
+                Gizmos.DrawWireSphere(this.interactCenter.position, this.radius);
+            }
         }
     }
 }

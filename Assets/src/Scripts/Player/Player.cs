@@ -7,27 +7,22 @@ using UnityEngine;
 namespace Yro {
     [RequireComponent(typeof(RTSControls))]
     public class Player : YBehaviour {
-        public enum FocusState
-        {
-            None,
-            Select,
-            Move
-        }
 
-        public FocusState focusState;
         public Interactable focus;
 
         private RTSControls _controls;
-        private EquipmentSet _equipmentSet;
+        private Inventory _inventory;
+        private EquipmentManager _equipmentManager;
+        private bool _canInteract = true;
 
         private void Awake() {
             this._controls = GetComponent<RTSControls>();
-            this._equipmentSet = GetComponentInChildren<EquipmentSet>();
         }
 
         void Start()
         {
-
+            this._inventory = Inventory.instance;
+            this._equipmentManager = EquipmentManager.instance;
         }
 
         // Update is called once per frame
@@ -36,8 +31,7 @@ namespace Yro {
             if (InputManager.GetKey("move")) {
                 this.OnMove();
             }
-            if (InputManager.GetKey("select"))
-            {
+            if (InputManager.GetKey("select")) {
                 this.OnSelect();
             }
             this.OnFocus();
@@ -48,12 +42,20 @@ namespace Yro {
             Ray ray = this.cam.yCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue)) {
                 Interactable interactable = hit.transform.GetComponent<Interactable>();
-                if (interactable != null && interactable.type != Interactable.Type.Player) {
-                    this.focusState = FocusState.Move;
+                if (interactable != null && interactable.type != Interactable.Type.Player)
+                {
+                    Debug.Log("Interactable: " + interactable.gameObject.name);
+                    this._canInteract = true;
                     this.focus = interactable;
                     float stoppingDistance = interactable.type != Interactable.Type.Enemy ? interactable.radius : 5f;
                     this._controls.SetTarget(this.focus.transform, stoppingDistance);
-                } else {
+                    if (this.focus.type == Interactable.Type.Enemy) {
+                        this.focus.OnInteract();
+                        this._canInteract = false;
+                    }
+                }
+                else
+                {
                     this.focus = null;
                     this._controls.UnsetTarget();
                     this._controls.Move(hit.point);
@@ -67,29 +69,28 @@ namespace Yro {
             {
                 Interactable interactable = hit.transform.GetComponent<Interactable>();
                 if (interactable != null) {
-                    this.focusState = FocusState.Select;
-                    this.focus = interactable;
+                    if (interactable.type != Interactable.Type.Other) {
+                        interactable.OnInteract();
+                    }
                 }
             }
         }
 
         private void OnFocus()
         {
-            if (this.focus) {
-                if (this.focusState == FocusState.Move) {
-                    this.OnMoveFocus();
-                } else if (this.focusState == FocusState.Select) {
+            if (this.focus)
+            {
+                float distance = Vector3.Distance(this.transform.position, focus.interactCenter.position);
+                float range = focus.type == Interactable.Type.Enemy ? 5f : (focus.radius + .05f);
+                if (distance <= range) {
+                    this._controls.LookAt((this.focus.transform.position - this.transform.position).normalized);
+                    if (this._canInteract == true) {
+                        this.focus.OnInteract();
+                        this._canInteract = false;
+                    }
 
+                    //attack if enemy
                 }
-            }
-        }
-
-        private void OnMoveFocus() {
-            float distance = Vector3.Distance(this.transform.position, focus.interactCenter.position);
-            float range = focus.type == Interactable.Type.Enemy ? 5f : focus.radius;
-            if (distance <= range) {
-                this._controls.LookAt((this.focus.transform.position - this.transform.position).normalized);
-                //attack or interact
             }
         }
     }
