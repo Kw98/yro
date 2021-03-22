@@ -6,11 +6,13 @@ using UnityEngine;
 namespace Yro {
     public class Inventory : MonoBehaviour {
         public int maxItems = 20;
-        public List<Item> _items;
 
+        [SerializeField] private GameObject _InventoryUI;
+        [SerializeField] private Transform _inventorySlotsParent;
+        private List<Item> _items;
+        private InventorySlot[] _slots;
+        private Timer timer;
 
-        public delegate void OnInventoryUpdate();
-        public OnInventoryUpdate onInventoryUpdateCallback;
 
         public static Inventory instance;
 
@@ -18,74 +20,49 @@ namespace Yro {
             if (Inventory.instance == null) {
                 Inventory.instance = this;
                 DontDestroyOnLoad(this.gameObject);
-                this._items = new List<Item>();
+                this.Setup();
             } else
             {
                 Destroy(this.gameObject);
             }
         }
 
-        public int AddItem(Item item) {
-            if (this._items.Find(x => x.name == item.name)) {
-                int toAdd = 0;
-                this._items.Where(x => x.name == item.name)
-                    .ToList()
-                    .ForEach(x => {
-                        toAdd = x.maxStack - x.currentStack;
-                        toAdd = item.currentStack < toAdd ? item.currentStack : toAdd;
-                        item.currentStack -= toAdd;
-                        x.currentStack += toAdd;
-                        if (item.currentStack <= 0)
-                            return;
-                });
+        private void Setup()
+        {
+            this._items = new List<Item>();
+            this._slots = this._inventorySlotsParent.GetComponentsInChildren<InventorySlot>();
+            this._InventoryUI.SetActive(false);
+            timer = new Timer();
+        }
 
-                if (item.currentStack <= 0)
-                {
-                    if (this.onInventoryUpdateCallback != null) {
-                        onInventoryUpdateCallback.Invoke();
-                    }
-                    return 0;
-                }
-            }
+        public bool AddItem(Item item) {
             
             if (this._items.Count < this.maxItems) {
                 this._items.Add(item);
-                if (this.onInventoryUpdateCallback != null) {
-                    onInventoryUpdateCallback.Invoke();
+                InventorySlot invSlot = this._slots.First(i => i.transform.childCount == 0);
+                if (invSlot != null) {
+                    ItemUi iUi = Instantiate(ResourcesManager.instance.ItemUiPrefab, invSlot.transform).GetComponent<ItemUi>();
+                    iUi.Setup(item);
                 }
-                return 0;
+                return true;
             }
-            return item.currentStack;
+            return false;
         }
 
-        public Item RemoveItem(Item item, int toRemove) {
+        public Item RemoveItem(Item item) {
             Item i = item;
-            i.currentStack = toRemove;
-            if (toRemove < item.currentStack)
-                this._items.Where(x => x == item).Select(x => { x.currentStack -= toRemove; return x; }).ToList();
-            else
-                this._items.Remove(item);
-            onInventoryUpdateCallback.Invoke();
+            this._items.Remove(item);
             return i;
         }
 
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.B)) {
-                Item i = new Item();
-                i.currentStack = Random.Range(1, i.maxStack);
-                int left = AddItem(i);
-                Dump();
-                Debug.Log("ileft: " + left);
-            }
-        }
-
-        private void Dump() {
-            Debug.Log("-------------------------------------------------------");
-            foreach (Item item in this._items)
+            timer.Update();
+            if (InputManager.GetKey("inventory") && timer.time <= 0)
             {
-                Debug.Log("item: " + item.name + " stacks: " + item.currentStack + "/" + item.maxStack);
+                timer.time = .5f;
+                this._InventoryUI.SetActive(!this._InventoryUI.activeInHierarchy);
             }
         }
 

@@ -19,8 +19,6 @@ namespace Yro {
         public Sprite icon = null;
         public Rarity rarity = Rarity.Normal;
         public int goldValue = 1;
-        public int maxStack = 30;
-        public int currentStack = 1;
         public virtual void Use() { }
 
     }

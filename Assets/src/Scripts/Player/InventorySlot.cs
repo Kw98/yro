@@ -5,12 +5,17 @@ using UnityEngine.EventSystems;
 
 namespace Yro {
     public class InventorySlot : MonoBehaviour, IDropHandler {
-        public Item item;
 
         public void OnDrop(PointerEventData eventData)
         {
             if (eventData.pointerDrag != null) {
-                eventData.pointerDrag.GetComponent<RectTransform>().position = GetComponent<RectTransform>().position;
+                ItemUi iUi = eventData.pointerDrag.GetComponent<ItemUi>();
+                if (this.transform.childCount == 1) {
+                    Transform child = this.transform.GetChild(0);
+                    child.SetParent(iUi.oldSlot);
+                    child.localPosition = Vector3.zero;
+                }
+                eventData.pointerDrag.transform.SetParent(this.transform);
             }
         }
     }

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7dba96aebb86a248ba75ef7800061d5, type: 3}
-  m_Name: sword
+  m_Name: axe
   m_EditorClassIdentifier: 
-  name: sword
-  icon: {fileID: 21300000, guid: 03117f17328ebe7409101b15b3e4c323, type: 3}
+  name: axe
+  icon: {fileID: 21300000, guid: 840df642ca63c424fada32341e17427d, type: 3}
   rarity: 0
   goldValue: 1
   slot: 3

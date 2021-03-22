@@ -6,11 +6,21 @@ namespace Yro {
     [DefaultExecutionOrder(-1)]
     public class Timer : MonoBehaviour {
         public float time;
-        public bool isFinished { private set { } get { return time >= 0; } }
+        public bool once = false;
 
-        void Update() {
-            if (time > 0)
-                time -= Time.deltaTime;
+        public delegate void onTimerFinished();
+        public onTimerFinished onFinished;
+
+        public void Update() {
+            if (this.time > 0) {
+                this.time -= Time.deltaTime;
+                this.once = false;
+            } else if (this.time <= 0 && !this.once) {
+                this.once = true;
+                if (this.onFinished != null) {
+                    this.onFinished.Invoke();
+                }
+            }
         }
     }
 }

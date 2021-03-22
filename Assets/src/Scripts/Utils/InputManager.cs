@@ -26,6 +26,7 @@ namespace Yro {
             inputs.Add("spell3", KeyCode.E);
             inputs.Add("special", KeyCode.R);
             inputs.Add("ultime", KeyCode.T);
+            inputs.Add("inventory", KeyCode.I);
         }
 
         public static void Add(string name, KeyCode keycode) {            
